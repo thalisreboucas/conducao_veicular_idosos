@@ -5,7 +5,7 @@ library(ggtext)
 
 
 #data <- read.csv2(file.choose())
-
+### theme graph of temporal series
 theme_set(theme_minimal() + theme(panel.grid.major = element_blank(),
                                   panel.grid.minor = element_blank(),
                                   axis.title = element_blank(),
@@ -47,6 +47,7 @@ df <- data %>%
 aux <- df %>% mutate(name = country)
 
 
+
  ggplot(df,aes(x = year,y = total_publications)) + 
   geom_line(color="#929497", size=0.5, alpha=0.3,linetype = "dotdash", aes(group = country)) +
   geom_line(data = aux %>% dplyr::select(-country), aes(group=name), color="#646369", size=1.2) +
@@ -58,6 +59,8 @@ aux <- df %>% mutate(name = country)
         subtitle = "" ,
          caption = )
 
+
+ggsave("grafico de series temporais",tms,width = "1000", height = "530",device = "png")
 
  #####
  # 2 #
@@ -99,6 +102,40 @@ df2 <- df2 %>% mutate(Total = as.numeric(Total),
                       fill = case_when(type == "author" ~ "#111111" ,
                                        type == "valitador" ~"#848884" ))
 
+########## author of articles
+
+ggplot(df1,aes(x = reorder(author_occupation ,-Total), y = Total ),width = 10) +
+   geom_bar(stat='identity', position = position_dodge2(preserve = "single"),size = 10) +
+   scale_fill_manual(values = c("#111111"),labels = c("Author")) +
+   scale_x_discrete() +
+   scale_y_continuous(position = "right") +
+   coord_capped_flip(top = waiver()) +
+   labs(
+      caption = "Data source: ...",
+      y = "Number total of profissional",
+      title = "**Author Occupation**",
+      subtitle = "of article's "
+   )
+
+
+########## validator of articles
+
+ggplot(df2,aes(x = reorder(validator_occupation ,-Total), y = Total ),width = 10) +
+   geom_bar(stat='identity', position = position_dodge2(preserve = "single"),size = 10) +
+   scale_fill_manual(values = c("#111111"),labels = c("Author")) +
+   scale_x_discrete() +
+   scale_y_continuous(position = "right") +
+   coord_capped_flip(top = waiver()) +
+   labs(
+      caption = "Data source: ...",
+      y = "Number total of profissional",
+      title = "**Validator Occupation**",
+      subtitle = "of article's "
+   )
+
+
+
+############### comparation of both
 
 ggplot(df2,aes(x = reorder(author_occupation ,-Total), y = Total ,fill = type,group = type),width = 10) +
    geom_bar(stat='identity', position = position_dodge2(preserve = "single"),size = 10) +
